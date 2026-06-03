@@ -73,7 +73,7 @@
     .row { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 13px; }
     .row strong { color: var(--text); text-align: right; overflow-wrap: anywhere; }
     .buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
-    .step-buttons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+    .step-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px; }
     button, .linkbtn {
       border: 0;
       border-radius: 12px;
@@ -106,7 +106,7 @@
       .grid { grid-template-columns: 1fr; }
       .controls { position: static; }
       iframe { height: 64vh; min-height: 420px; }
-      .step-buttons { grid-template-columns: repeat(2, 1fr); }
+      .step-buttons { grid-template-columns: repeat(3, 1fr); }
     }
   </style>
 </head>
@@ -202,6 +202,12 @@
           <button class="secondary" type="button" data-delta="-1000">-1000</button>
           <button class="secondary" type="button" data-delta="-100">-100</button>
           <button class="secondary" type="button" data-delta="-24">-24</button>
+          <button class="secondary" type="button" data-delta="-4">-4</button>
+          <button class="secondary" type="button" data-delta="-2">-2</button>
+          <button class="secondary" type="button" data-delta="-1">-1</button>
+          <button class="secondary" type="button" data-delta="1">+1</button>
+          <button class="secondary" type="button" data-delta="2">+2</button>
+          <button class="secondary" type="button" data-delta="4">+4</button>
           <button class="secondary" type="button" data-delta="24">+24</button>
           <button class="secondary" type="button" data-delta="100">+100</button>
           <button class="secondary" type="button" data-delta="1000">+1000</button>
