@@ -5,27 +5,218 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Sundai ID Week / Ref Viewer</title>
 <style>
-:root{--bg:#f6f7fb;--card:#fff;--text:#111827;--muted:#6b7280;--line:#d8deea;--accent:#1f4fd8;--soft:#eef2ff;--ok:#067647;--ng:#b42318}*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#eef2ff,var(--bg) 300px);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.wrap{width:min(1180px,calc(100% - 28px));margin:auto;padding:26px 0 44px}h1{margin:0 0 8px;font-size:clamp(24px,4vw,38px);letter-spacing:-.04em}p{line-height:1.65}.lead,.hint,.sub{color:var(--muted)}.tabs{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}.tab{border:1px solid #c7d2fe;border-radius:999px;padding:11px 16px;background:#fff;color:#1e3a8a;font-weight:800;cursor:pointer}.tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}[hidden]{display:none!important}.grid{display:grid;grid-template-columns:360px 1fr;gap:18px;align-items:start}.card{background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 45px rgba(17,24,39,.09)}.controls{position:sticky;top:14px;padding:18px}.panel{padding:18px;margin-top:18px}.viewer{overflow:hidden}.viewer-head{padding:16px 18px;border-bottom:1px solid var(--line);background:#f9fafc}.title{margin:0 0 12px;font-size:17px}.field{margin-bottom:14px}label{display:block;margin-bottom:6px;font-size:13px;font-weight:800;color:#374151}select,input,textarea,button{font:inherit}select,input,textarea{width:100%;border:1px solid #b9c2d3;border-radius:12px;background:#fff;color:var(--text);padding:11px 12px;outline:none}select:focus,input:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(31,79,216,.12)}textarea{min-height:150px;resize:vertical;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;line-height:1.55}.importArea{min-height:110px}.hint{margin:6px 0 0;font-size:12px}.status{display:grid;gap:8px;margin:14px 0;padding:12px;border:1px solid var(--line);border-radius:13px;background:#f9fafc}.row{display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-size:13px}.row strong{color:var(--text);text-align:right;overflow-wrap:anywhere}.buttons{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}button,.linkbtn{border:0;border-radius:12px;padding:11px 14px;background:var(--accent);color:#fff;font-weight:800;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;min-height:42px}button.secondary,.linkbtn.secondary{background:var(--soft);color:#1e3a8a;border:1px solid #c7d2fe}button.danger{background:#fff1f0;color:#b42318;border:1px solid #fecaca}button:disabled{opacity:.45;cursor:not-allowed}.msg{min-height:22px;margin:10px 0 0;font-size:13px;font-weight:800}.ok{color:var(--ok)}.ng{color:var(--ng)}code{background:var(--soft);border-radius:8px;padding:2px 5px;overflow-wrap:anywhere}iframe{display:block;width:100%;height:min(72vh,760px);min-height:520px;border:0;background:#fff}.headrow{display:flex;justify-content:space-between;align-items:center;gap:12px}.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:12px;background:#fff}table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:11px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{background:#f3f6fb;font-size:12px;color:#4b5563}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.empty{padding:16px;text-align:center;color:var(--muted)}button.idbtn{display:inline;border:0;background:transparent;color:var(--accent);padding:2px 4px;min-height:0;border-radius:6px;font:inherit;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-weight:900;text-decoration:underline}button.idbtn:hover,button.idbtn:focus{background:var(--soft);outline:2px solid rgba(31,79,216,.18)}@media(max-width:880px){.grid{grid-template-columns:1fr}.controls{position:static}iframe{height:64vh;min-height:420px}.steps{grid-template-columns:repeat(3,1fr)}}
+:root{
+  color-scheme:light;
+  --bg:#f6f7fb;--bgtop:#eef2ff;--card:#fff;--text:#111827;--muted:#6b7280;
+  --line:#d8deea;--accent:#1f4fd8;--soft:#eef2ff;--soft-text:#1e3a8a;--soft-line:#c7d2fe;
+  --ok:#067647;--ng:#b42318;--head:#f9fafc;--th:#f3f6fb;--th-text:#4b5563;
+  --input-line:#b9c2d3;--focus:rgba(31,79,216,.12);--shadow:0 18px 45px rgba(17,24,39,.09);
+  --danger-bg:#fff1f0;--danger-text:#b42318;--danger-line:#fecaca
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0b0f1a;--bgtop:#141b2e;--card:#151c2c;--text:#e6eaf3;--muted:#9aa5bd;
+  --line:#2b3550;--accent:#4c6ef5;--soft:#1e2740;--soft-text:#c7d2fe;--soft-line:#38456b;
+  --ok:#4ade80;--ng:#f87171;--head:#121a2b;--th:#1a2338;--th-text:#aab4cc;
+  --input-line:#3a4666;--focus:rgba(108,140,245,.25);--shadow:0 18px 45px rgba(0,0,0,.45);
+  --danger-bg:#2b1620;--danger-text:#fda4af;--danger-line:#7f1d3a
+}
+@media(prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0b0f1a;--bgtop:#141b2e;--card:#151c2c;--text:#e6eaf3;--muted:#9aa5bd;
+    --line:#2b3550;--accent:#4c6ef5;--soft:#1e2740;--soft-text:#c7d2fe;--soft-line:#38456b;
+    --ok:#4ade80;--ng:#f87171;--head:#121a2b;--th:#1a2338;--th-text:#aab4cc;
+    --input-line:#3a4666;--focus:rgba(108,140,245,.25);--shadow:0 18px 45px rgba(0,0,0,.45);
+    --danger-bg:#2b1620;--danger-text:#fda4af;--danger-line:#7f1d3a
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,var(--bgtop),var(--bg) 300px);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.wrap{width:min(1180px,calc(100% - 28px));margin:auto;padding:26px 0 44px}
+h1{margin:0 0 8px;font-size:clamp(24px,4vw,38px);letter-spacing:-.04em}
+p{line-height:1.65}
+.lead,.hint,.sub{color:var(--muted)}
+.headrow{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.tabs{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}
+.tab{border:1px solid var(--soft-line);border-radius:999px;padding:11px 16px;background:var(--card);color:var(--soft-text);font-weight:800;cursor:pointer}
+.tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+[hidden]{display:none!important}
+.grid{display:grid;grid-template-columns:360px 1fr;gap:18px;align-items:start}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+.controls{position:sticky;top:14px;padding:18px;max-height:calc(100vh - 28px);overflow:auto}
+.panel{padding:18px;margin-top:18px}
+.viewer{overflow:hidden}
+.viewer-head{padding:16px 18px;border-bottom:1px solid var(--line);background:var(--head)}
+.title{margin:0 0 12px;font-size:17px}
+.field{margin-bottom:14px}
+label{display:block;margin-bottom:6px;font-size:13px;font-weight:800;color:var(--text)}
+select,input,textarea,button{font:inherit}
+select,input,textarea{width:100%;border:1px solid var(--input-line);border-radius:12px;background:var(--card);color:var(--text);padding:11px 12px;outline:none}
+select:focus,input:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--focus)}
+textarea{min-height:150px;resize:vertical;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;line-height:1.55}
+.importArea{min-height:110px}
+.hint{margin:6px 0 0;font-size:12px}
+.status{display:grid;gap:8px;margin:14px 0;padding:12px;border:1px solid var(--line);border-radius:13px;background:var(--head)}
+.row{display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-size:13px}
+.row strong{color:var(--text);text-align:right;overflow-wrap:anywhere}
+.buttons{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+button,.linkbtn{border:0;border-radius:12px;padding:11px 14px;background:var(--accent);color:#fff;font-weight:800;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;min-height:42px}
+button.secondary,.linkbtn.secondary{background:var(--soft);color:var(--soft-text);border:1px solid var(--soft-line)}
+button.danger{background:var(--danger-bg);color:var(--danger-text);border:1px solid var(--danger-line)}
+button:disabled{opacity:.45;cursor:not-allowed}
+button.minibtn{min-height:0;padding:5px 10px;border-radius:8px;font-size:12px}
+.msg{min-height:22px;margin:10px 0 0;font-size:13px;font-weight:800}
+.msg .inlineUndo{min-height:0;margin-left:8px;padding:3px 10px;border-radius:8px;font-size:12px;background:var(--soft);color:var(--soft-text);border:1px solid var(--soft-line)}
+.ok{color:var(--ok)}
+.ng{color:var(--ng)}
+code{background:var(--soft);color:var(--text);border-radius:8px;padding:2px 5px;overflow-wrap:anywhere}
+iframe{display:block;width:100%;height:min(72vh,760px);min-height:520px;border:0;background:#fff}
+.tablewrap{overflow:auto;max-height:480px;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:11px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--th);font-size:12px;color:var(--th-text);position:sticky;top:0}
+.thbtn{background:transparent;border:0;color:inherit;font:inherit;font-weight:800;min-height:0;padding:0;cursor:pointer}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.empty{padding:16px;text-align:center;color:var(--muted)}
+button.idbtn{display:inline;border:0;background:transparent;color:var(--accent);padding:2px 4px;min-height:0;border-radius:6px;font:inherit;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-weight:900;text-decoration:underline}
+button.idbtn:hover,button.idbtn:focus{background:var(--soft);outline:2px solid var(--focus)}
+.checkline{display:flex;align-items:center;gap:8px;margin:8px 0;font-size:13px;font-weight:700;color:var(--text)}
+.checkline input{width:auto;margin:0}
+details.card summary{padding:16px 18px;font-size:17px;font-weight:800;cursor:pointer;list-style-position:inside}
+details.card[open] summary{border-bottom:1px solid var(--line)}
+.details-body{padding:18px}
+.hiddenGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:4px;max-height:340px;overflow:auto;border:1px solid var(--line);border-radius:12px;padding:10px;margin-top:10px}
+.hiddenRow{display:flex;align-items:center;gap:8px;margin:0;padding:5px 7px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer}
+.hiddenRow:hover{background:var(--soft)}
+.hiddenRow input{width:auto;margin:0;flex:none}
+.hiddenRow .hname{color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hiddenRow.isHidden{opacity:.5}
+.hiddenRow.isHidden .mono{text-decoration:line-through}
+@media(max-width:880px){.grid{grid-template-columns:1fr}.controls{position:static;max-height:none}iframe{height:64vh;min-height:420px}.steps{grid-template-columns:repeat(3,1fr)}}
 </style>
 </head>
 <body>
 <main class="wrap">
-<header><h1>Sundai ID Week / Ref Viewer</h1><p class="lead">コピーした <code>ID 名前</code> 形式をそのままインポートできます。登録済み一覧のIDを押すと、そのIDのiframeへ即切り替わります。</p></header>
-<nav class="tabs" aria-label="表示モード"><button class="tab active" type="button" data-tab="weekly">1ページ目: 週選択モード</button><button class="tab" type="button" data-tab="direct">2ページ目: ref直接入力モード</button></nav>
+<header>
+  <div class="headrow">
+    <h1>Sundai ID Week / Ref Viewer</h1>
+    <button id="themeToggle" class="secondary" type="button" title="テーマを切り替え">テーマ: 自動</button>
+  </div>
+  <p class="lead">週選択・ref直接入力の2モード。選択肢の非表示管理 / 検索 / 履歴 / 並べ替え / 削除の取り消し / JSONバックアップ / URL共有（アドレスバーのハッシュに状態を保存）に対応しています。</p>
+</header>
+<nav class="tabs" aria-label="表示モード">
+  <button class="tab active" type="button" data-tab="weekly">1ページ目: 週選択モード</button>
+  <button class="tab" type="button" data-tab="direct">2ページ目: ref直接入力モード</button>
+</nav>
 
 <section id="weeklyPanel">
 <div class="grid">
 <aside class="card controls">
-<h2 class="title">週選択</h2>
-<div class="field"><label for="weeklyBaseId">第1週ID</label><select id="weeklyBaseId"></select><p class="hint">1516278から1523022まで、24ずつ進むIDを表示します。</p></div>
-<div class="field"><label for="weeklyWeek">週番号</label><select id="weeklyWeek"></select><p class="hint">計算式: 第1週ID + (週番号 - 1) × 2</p></div>
-<div class="status" aria-live="polite"><div class="row"><span>登録名</span><strong id="weeklyCurrentName">未登録</strong></div><div class="row"><span>第1週ID</span><strong id="weeklyCurrentBase">-</strong></div><div class="row"><span>計算後ID</span><strong id="weeklyCurrentActual">-</strong></div><div class="row"><span>週</span><strong id="weeklyCurrentWeek">-</strong></div></div>
-<div class="buttons"><a id="weeklyOpenUrl" class="linkbtn secondary" href="#" target="_blank" rel="noopener noreferrer">新しいタブで開く</a><button id="weeklyCopyCurrent" class="secondary" type="button">現在のIDをコピー</button></div><p id="weeklySideMsg" class="msg" role="status"></p>
+  <h2 class="title">週選択</h2>
+  <div class="field">
+    <label for="weeklySelectSearch">選択肢を検索</label>
+    <input id="weeklySelectSearch" type="text" autocomplete="off" placeholder="IDまたは名前で絞り込み">
+  </div>
+  <div class="field">
+    <label for="weeklyBaseId">第1週ID</label>
+    <select id="weeklyBaseId" size="1"></select>
+    <p class="hint">1516278から1523022まで、24ずつ進むIDを表示します。</p>
+    <label class="checkline"><input id="weeklyNamedOnly" type="checkbox">登録名があるIDのみ表示</label>
+    <div class="pair">
+      <button id="weeklyPrevBase" class="secondary" type="button">← 前のID</button>
+      <button id="weeklyNextBase" class="secondary" type="button">次のID →</button>
+    </div>
+    <div class="pair">
+      <button id="weeklyHideCurrent" class="danger" type="button">この選択肢を非表示</button>
+      <button id="weeklyOpenManager" class="secondary" type="button">非表示の管理</button>
+    </div>
+    <p id="weeklyHiddenCount" class="hint">非表示: 0件</p>
+  </div>
+  <div class="field">
+    <label for="weeklyWeek">週番号</label>
+    <select id="weeklyWeek"></select>
+    <p class="hint">計算式: 第1週ID + (週番号 - 1) × 2</p>
+    <div class="pair">
+      <button id="weeklyPrevWeek" class="secondary" type="button">← 前の週</button>
+      <button id="weeklyNextWeek" class="secondary" type="button">次の週 →</button>
+    </div>
+  </div>
+  <div class="status" aria-live="polite">
+    <div class="row"><span>登録名</span><strong id="weeklyCurrentName">未登録</strong></div>
+    <div class="row"><span>第1週ID</span><strong id="weeklyCurrentBase">-</strong></div>
+    <div class="row"><span>計算後ID</span><strong id="weeklyCurrentActual">-</strong></div>
+    <div class="row"><span>週</span><strong id="weeklyCurrentWeek">-</strong></div>
+  </div>
+  <div class="buttons">
+    <a id="weeklyOpenUrl" class="linkbtn secondary" href="#" target="_blank" rel="noopener noreferrer">新しいタブで開く</a>
+    <button id="weeklyCopyCurrent" class="secondary" type="button">IDをコピー</button>
+    <button id="weeklyCopyUrl" class="secondary" type="button">URLをコピー</button>
+    <button id="weeklyReload" class="secondary" type="button">再読み込み</button>
+    <button id="weeklyFullscreen" class="secondary" type="button">全画面</button>
+  </div>
+  <p id="weeklySideMsg" class="msg" role="status"></p>
 </aside>
 <section>
-<section class="card viewer"><div class="viewer-head"><h2 class="title">iframe</h2><p class="sub">URL: <code id="weeklyUrlText">-</code></p></div><iframe id="weeklyFrame" title="週選択モードの表示ページ"></iframe></section>
-<section class="card panel"><h2 class="title">名前登録</h2><div class="field"><label for="weeklyNameInput">選択中の第1週IDに紐づける名前</label><input id="weeklyNameInput" type="text" autocomplete="off" placeholder="例: 山田太郎"><p class="hint">空欄で保存すると、この第1週IDの登録名を削除します。</p></div><button id="weeklySaveName" type="button">名前を保存</button><p id="weeklyNameMsg" class="msg" role="status"></p></section>
-<section class="card panel"><div class="headrow"><div><h2 class="title">登録済み 第1週ID・名前一覧</h2><p id="weeklyCount" class="sub">0件</p></div><button id="weeklyCopyAll" type="button">一覧をコピー</button></div><div class="field"><label for="weeklyCopyArea">コピー内容</label><textarea id="weeklyCopyArea" readonly placeholder="登録済みのIDと名前がここに表示されます。"></textarea><p class="hint">下の一覧テーブルのIDを押すと、そのIDを選択してiframeを切り替えます。</p></div><div class="field"><label for="weeklyImportArea">コピー形式からインポート</label><textarea id="weeklyImportArea" class="importArea" placeholder="1516278 名前&#10;1516302 名前"></textarea><p class="hint">第1週IDとして有効な行だけ取り込みます。既存IDは上書きされます。</p><div class="buttons"><button id="weeklyImport" type="button">インポート</button><button id="weeklyClearImport" class="secondary" type="button">入力欄を空にする</button></div><p id="weeklyImportMsg" class="msg" role="status"></p></div><div id="weeklyTable" class="tablewrap"></div><p id="weeklyCopyMsg" class="msg" role="status"></p></section>
+  <section class="card viewer">
+    <div class="viewer-head"><h2 class="title">iframe</h2><p class="sub">URL: <code id="weeklyUrlText">-</code></p></div>
+    <iframe id="weeklyFrame" title="週選択モードの表示ページ"></iframe>
+  </section>
+  <details id="hiddenManager" class="card panel" style="padding:0">
+    <summary>選択肢の表示 / 非表示 管理</summary>
+    <div class="details-body">
+      <p class="hint" style="margin:0 0 10px">チェックを外したIDは第1週IDの選択肢から消えます。データは残るので、いつでも表示に戻せます。</p>
+      <div class="field" style="margin-bottom:0">
+        <label for="hiddenSearch">管理リストを検索</label>
+        <input id="hiddenSearch" type="text" autocomplete="off" placeholder="IDまたは名前で絞り込み">
+      </div>
+      <div class="buttons">
+        <button id="hiddenShowAll" class="secondary" type="button">すべて表示に戻す</button>
+        <button id="hiddenHideUnnamed" class="danger" type="button">未登録IDをまとめて非表示</button>
+      </div>
+      <div id="hiddenList" class="hiddenGrid" aria-label="選択肢の表示状態一覧"></div>
+      <p id="weeklyHideMsg" class="msg" role="status"></p>
+    </div>
+  </details>
+  <section class="card panel">
+    <h2 class="title">名前登録</h2>
+    <div class="field">
+      <label for="weeklyNameInput">選択中の第1週IDに紐づける名前</label>
+      <input id="weeklyNameInput" type="text" autocomplete="off" placeholder="例: 山田太郎">
+      <p class="hint">空欄で保存すると、この第1週IDの登録名を削除します。</p>
+    </div>
+    <button id="weeklySaveName" type="button">名前を保存</button>
+    <p id="weeklyNameMsg" class="msg" role="status"></p>
+  </section>
+  <section class="card panel">
+    <div class="headrow">
+      <div><h2 class="title">登録済み 第1週ID・名前一覧</h2><p id="weeklyCount" class="sub">0件</p></div>
+      <button id="weeklyCopyAll" type="button">一覧をコピー</button>
+    </div>
+    <div class="field">
+      <label for="weeklyListSearch">一覧を検索</label>
+      <input id="weeklyListSearch" type="text" autocomplete="off" placeholder="IDまたは名前で絞り込み">
+    </div>
+    <div id="weeklyTable" class="tablewrap"></div>
+    <p id="weeklyCopyMsg" class="msg" role="status"></p>
+    <div class="field" style="margin-top:14px">
+      <label for="weeklyCopyArea">コピー内容</label>
+      <textarea id="weeklyCopyArea" readonly placeholder="登録済みのIDと名前がここに表示されます。"></textarea>
+      <p class="hint">一覧テーブルのIDを押すと、そのIDを選択してiframeを切り替えます。見出しを押すと並べ替えできます。</p>
+    </div>
+    <div class="field">
+      <label for="weeklyImportArea">コピー形式からインポート</label>
+      <textarea id="weeklyImportArea" class="importArea" placeholder="1516278 名前&#10;1516302 名前"></textarea>
+      <p class="hint">第1週IDとして有効な行だけ取り込みます。既存IDは上書きされます。</p>
+      <div class="buttons">
+        <button id="weeklyImport" type="button">インポート</button>
+        <button id="weeklyClearImport" class="secondary" type="button">入力欄を空にする</button>
+      </div>
+      <p id="weeklyImportMsg" class="msg" role="status"></p>
+    </div>
+  </section>
 </section>
 </div>
 </section>
@@ -33,67 +224,849 @@
 <section id="directPanel" hidden>
 <div class="grid">
 <aside class="card controls">
-<h2 class="title">ref直接入力</h2>
-<div class="field"><label for="directRefInput">ref ID</label><input id="directRefInput" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="例: 1521006"><p class="hint">数字のみ入力できます。表示ボタンまたは増減ボタンでiframeを更新します。</p></div>
-<button id="directApply" type="button">このrefで表示</button>
-<div class="steps" aria-label="ref ID増減ボタン"><button class="secondary" type="button" data-delta="-1000">-1000</button><button class="secondary" type="button" data-delta="-100">-100</button><button class="secondary" type="button" data-delta="-24">-24</button><button class="secondary" type="button" data-delta="-4">-4</button><button class="secondary" type="button" data-delta="-2">-2</button><button class="secondary" type="button" data-delta="-1">-1</button><button class="secondary" type="button" data-delta="1">+1</button><button class="secondary" type="button" data-delta="2">+2</button><button class="secondary" type="button" data-delta="4">+4</button><button class="secondary" type="button" data-delta="24">+24</button><button class="secondary" type="button" data-delta="100">+100</button><button class="secondary" type="button" data-delta="1000">+1000</button></div>
-<div class="status" aria-live="polite"><div class="row"><span>登録名</span><strong id="directCurrentName">未登録</strong></div><div class="row"><span>現在のref ID</span><strong id="directCurrentId">-</strong></div></div>
-<div class="buttons"><a id="directOpenUrl" class="linkbtn secondary" href="#" target="_blank" rel="noopener noreferrer">新しいタブで開く</a><button id="directCopyCurrent" class="secondary" type="button">現在のrefをコピー</button></div><p id="directSideMsg" class="msg" role="status"></p>
+  <h2 class="title">ref直接入力</h2>
+  <div class="field">
+    <label for="directRefInput">ref ID</label>
+    <input id="directRefInput" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="例: 1521006">
+    <p class="hint">数字のみ入力できます。表示ボタンまたは増減ボタンでiframeを更新します。</p>
+  </div>
+  <button id="directApply" type="button">このrefで表示</button>
+  <div class="steps" aria-label="ref ID増減ボタン">
+    <button class="secondary" type="button" data-delta="-1000">-1000</button>
+    <button class="secondary" type="button" data-delta="-100">-100</button>
+    <button class="secondary" type="button" data-delta="-24">-24</button>
+    <button class="secondary" type="button" data-delta="-4">-4</button>
+    <button class="secondary" type="button" data-delta="-2">-2</button>
+    <button class="secondary" type="button" data-delta="-1">-1</button>
+    <button class="secondary" type="button" data-delta="1">+1</button>
+    <button class="secondary" type="button" data-delta="2">+2</button>
+    <button class="secondary" type="button" data-delta="4">+4</button>
+    <button class="secondary" type="button" data-delta="24">+24</button>
+    <button class="secondary" type="button" data-delta="100">+100</button>
+    <button class="secondary" type="button" data-delta="1000">+1000</button>
+  </div>
+  <div class="field" style="margin-top:14px">
+    <label for="directCustomStep">カスタム増減値</label>
+    <input id="directCustomStep" type="number" min="1" step="1" value="12">
+    <div class="pair">
+      <button id="directCustomMinus" class="secondary" type="button">－ 減らす</button>
+      <button id="directCustomPlus" class="secondary" type="button">＋ 増やす</button>
+    </div>
+  </div>
+  <div class="status" aria-live="polite">
+    <div class="row"><span>登録名</span><strong id="directCurrentName">未登録</strong></div>
+    <div class="row"><span>現在のref ID</span><strong id="directCurrentId">-</strong></div>
+  </div>
+  <div class="buttons">
+    <a id="directOpenUrl" class="linkbtn secondary" href="#" target="_blank" rel="noopener noreferrer">新しいタブで開く</a>
+    <button id="directCopyCurrent" class="secondary" type="button">refをコピー</button>
+    <button id="directCopyUrl" class="secondary" type="button">URLをコピー</button>
+    <button id="directReload" class="secondary" type="button">再読み込み</button>
+    <button id="directFullscreen" class="secondary" type="button">全画面</button>
+  </div>
+  <p id="directSideMsg" class="msg" role="status"></p>
 </aside>
 <section>
-<section class="card viewer"><div class="viewer-head"><h2 class="title">iframe</h2><p class="sub">URL: <code id="directUrlText">未表示</code></p></div><iframe id="directFrame" title="ref直接入力モードの表示ページ"></iframe></section>
-<section class="card panel"><h2 class="title">名前登録</h2><div class="field"><label for="directNameInput">現在のref IDに紐づける名前</label><input id="directNameInput" type="text" autocomplete="off" placeholder="例: 山田太郎"><p class="hint">空欄で保存すると、このref IDの登録名を削除します。</p></div><button id="directSaveName" type="button">名前を保存</button><p id="directNameMsg" class="msg" role="status"></p></section>
-<section class="card panel"><div class="headrow"><div><h2 class="title">登録済み ref ID・名前一覧</h2><p id="directCount" class="sub">0件</p></div><button id="directCopyAll" type="button">一覧をコピー</button></div><div class="field"><label for="directCopyArea">コピー内容</label><textarea id="directCopyArea" readonly placeholder="登録済みのref IDと名前がここに表示されます。"></textarea><p class="hint">下の一覧テーブルのIDを押すと、そのrefをiframeで表示します。</p></div><div class="field"><label for="directImportArea">コピー形式からインポート</label><textarea id="directImportArea" class="importArea" placeholder="1284748 勝田　夏の英文法総整理&#10;1284752 船岡先生　医系英語"></textarea><p class="hint">任意のref IDを取り込めます。既存IDは上書きされます。</p><div class="buttons"><button id="directImport" type="button">インポート</button><button id="directClearImport" class="secondary" type="button">入力欄を空にする</button></div><p id="directImportMsg" class="msg" role="status"></p></div><div id="directTable" class="tablewrap"></div><p id="directCopyMsg" class="msg" role="status"></p></section>
+  <section class="card viewer">
+    <div class="viewer-head"><h2 class="title">iframe</h2><p class="sub">URL: <code id="directUrlText">未表示</code></p></div>
+    <iframe id="directFrame" title="ref直接入力モードの表示ページ"></iframe>
+  </section>
+  <section class="card panel">
+    <h2 class="title">名前登録</h2>
+    <div class="field">
+      <label for="directNameInput">現在のref IDに紐づける名前</label>
+      <input id="directNameInput" type="text" autocomplete="off" placeholder="例: 山田太郎">
+      <p class="hint">空欄で保存すると、このref IDの登録名を削除します。</p>
+    </div>
+    <button id="directSaveName" type="button">名前を保存</button>
+    <p id="directNameMsg" class="msg" role="status"></p>
+  </section>
+  <section class="card panel">
+    <div class="headrow">
+      <div><h2 class="title">表示履歴</h2><p id="directHistoryCount" class="sub">0件</p></div>
+      <button id="directHistoryClear" class="danger" type="button">履歴をクリア</button>
+    </div>
+    <p class="hint" style="margin:0 0 10px">最近表示したref IDを新しい順に最大50件まで記録します。IDを押すと再表示します。</p>
+    <div id="directHistoryList" class="tablewrap"></div>
+    <p id="directHistoryMsg" class="msg" role="status"></p>
+  </section>
+  <section class="card panel">
+    <div class="headrow">
+      <div><h2 class="title">登録済み ref ID・名前一覧</h2><p id="directCount" class="sub">0件</p></div>
+      <button id="directCopyAll" type="button">一覧をコピー</button>
+    </div>
+    <div class="field">
+      <label for="directListSearch">一覧を検索</label>
+      <input id="directListSearch" type="text" autocomplete="off" placeholder="IDまたは名前で絞り込み">
+    </div>
+    <div id="directTable" class="tablewrap"></div>
+    <p id="directCopyMsg" class="msg" role="status"></p>
+    <div class="field" style="margin-top:14px">
+      <label for="directCopyArea">コピー内容</label>
+      <textarea id="directCopyArea" readonly placeholder="登録済みのref IDと名前がここに表示されます。"></textarea>
+      <p class="hint">一覧テーブルのIDを押すと、そのrefをiframeで表示します。見出しを押すと並べ替えできます。</p>
+    </div>
+    <div class="field">
+      <label for="directImportArea">コピー形式からインポート</label>
+      <textarea id="directImportArea" class="importArea" placeholder="1284748 勝田　夏の英文法総整理&#10;1284752 船岡先生　医系英語"></textarea>
+      <p class="hint">任意のref IDを取り込めます。既存IDは上書きされます。</p>
+      <div class="buttons">
+        <button id="directImport" type="button">インポート</button>
+        <button id="directClearImport" class="secondary" type="button">入力欄を空にする</button>
+      </div>
+      <p id="directImportMsg" class="msg" role="status"></p>
+    </div>
+  </section>
 </section>
 </div>
+</section>
+
+<section class="card panel">
+  <h2 class="title">データ管理</h2>
+  <p class="hint" style="margin:0 0 10px">登録名・非表示設定・履歴・テーマなど全データをJSONファイルとして保存 / 復元できます。インポートは既存データに統合されます（同じIDは上書き）。</p>
+  <div class="buttons">
+    <button id="exportData" type="button">JSONエクスポート</button>
+    <button id="importDataBtn" class="secondary" type="button">JSONインポート</button>
+    <button id="resetAll" class="danger" type="button">全データを削除</button>
+    <input id="importFile" type="file" accept="application/json,.json" hidden>
+  </div>
+  <p id="dataMsg" class="msg" role="status"></p>
 </section>
 </main>
 
 <script>
 (() => {
 'use strict';
-const C={storageKey:'sundai-id-viewer-v2',legacyWeeklyKey:'sundai-id-name-records-v1',start:1516278,end:1523022,baseStep:24,weeks:11,weekStep:2,urlPrefix:'https://players.streaks.jp/prod-sundai/634f85d3a7674636bd1212b5904b1d81/index.html?m=ref:'};
-const $=id=>document.getElementById(id);
-const E={tabs:[...document.querySelectorAll('[data-tab]')],weeklyPanel:$('weeklyPanel'),directPanel:$('directPanel'),weeklyBaseId:$('weeklyBaseId'),weeklyWeek:$('weeklyWeek'),weeklyCurrentName:$('weeklyCurrentName'),weeklyCurrentBase:$('weeklyCurrentBase'),weeklyCurrentActual:$('weeklyCurrentActual'),weeklyCurrentWeek:$('weeklyCurrentWeek'),weeklyOpenUrl:$('weeklyOpenUrl'),weeklyCopyCurrent:$('weeklyCopyCurrent'),weeklySideMsg:$('weeklySideMsg'),weeklyUrlText:$('weeklyUrlText'),weeklyFrame:$('weeklyFrame'),weeklyNameInput:$('weeklyNameInput'),weeklySaveName:$('weeklySaveName'),weeklyNameMsg:$('weeklyNameMsg'),weeklyCount:$('weeklyCount'),weeklyCopyAll:$('weeklyCopyAll'),weeklyCopyArea:$('weeklyCopyArea'),weeklyImportArea:$('weeklyImportArea'),weeklyImport:$('weeklyImport'),weeklyClearImport:$('weeklyClearImport'),weeklyImportMsg:$('weeklyImportMsg'),weeklyTable:$('weeklyTable'),weeklyCopyMsg:$('weeklyCopyMsg'),directRefInput:$('directRefInput'),directApply:$('directApply'),directSteps:[...document.querySelectorAll('[data-delta]')],directCurrentName:$('directCurrentName'),directCurrentId:$('directCurrentId'),directOpenUrl:$('directOpenUrl'),directCopyCurrent:$('directCopyCurrent'),directSideMsg:$('directSideMsg'),directUrlText:$('directUrlText'),directFrame:$('directFrame'),directNameInput:$('directNameInput'),directSaveName:$('directSaveName'),directNameMsg:$('directNameMsg'),directCount:$('directCount'),directCopyAll:$('directCopyAll'),directCopyArea:$('directCopyArea'),directImportArea:$('directImportArea'),directImport:$('directImport'),directClearImport:$('directClearImport'),directImportMsg:$('directImportMsg'),directTable:$('directTable'),directCopyMsg:$('directCopyMsg')};
-let storageOk=true,data={weeklyRecords:{},directRefRecords:{}},directCurrentRefId=null;
-function baseIds(){const ids=[];for(let id=C.start;id<=C.end;id+=C.baseStep)ids.push(id);return ids}
-function validWeeklyBaseSet(){return new Set(baseIds().map(String))}
-function msg(node,text,type){node.textContent=text||'';node.classList.remove('ok','ng');if(type)node.classList.add(type)}
-function esc(v){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
-function fmtDate(v){const d=new Date(v);return v&&!Number.isNaN(d.getTime())?d.toLocaleString('ja-JP',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}):'-'}
-function canStore(){try{localStorage.setItem(C.storageKey+':test','1');localStorage.removeItem(C.storageKey+':test');return true}catch(_){return false}}
-function normalizeWeekly(raw){const out={},valid=validWeeklyBaseSet();if(!raw||typeof raw!=='object')return out;for(const[id,v]of Object.entries(raw)){if(!valid.has(id))continue;const name=typeof v==='string'?v.trim():String((v&&v.name)||'').trim();if(name)out[id]={name,updatedAt:typeof v.updatedAt==='string'?v.updatedAt:''}}return out}
-function normalizeDirect(raw){const out={};if(!raw||typeof raw!=='object')return out;for(const[id,v]of Object.entries(raw)){if(!/^\d+$/.test(id))continue;const n=Number(id);if(!Number.isSafeInteger(n)||n<=0)continue;const name=typeof v==='string'?v.trim():String((v&&v.name)||'').trim();if(name)out[id]={name,updatedAt:typeof v.updatedAt==='string'?v.updatedAt:''}}return out}
-function loadData(){storageOk=canStore();if(!storageOk){msg(E.weeklyNameMsg,'localStorageを使用できません。リロード後の保存は保証されません。','ng');msg(E.directNameMsg,'localStorageを使用できません。リロード後の保存は保証されません。','ng');return{weeklyRecords:{},directRefRecords:{}}}try{const next=JSON.parse(localStorage.getItem(C.storageKey)||'{}');const legacy=JSON.parse(localStorage.getItem(C.legacyWeeklyKey)||'{}');return{weeklyRecords:normalizeWeekly(Object.keys(next.weeklyRecords||{}).length?next.weeklyRecords:legacy),directRefRecords:normalizeDirect(next.directRefRecords)}}catch(_){msg(E.weeklyNameMsg,'保存データの読み込みに失敗しました。','ng');msg(E.directNameMsg,'保存データの読み込みに失敗しました。','ng');return{weeklyRecords:{},directRefRecords:{}}}}
-function persist(){if(!storageOk)return false;try{localStorage.setItem(C.storageKey,JSON.stringify(data));return true}catch(_){return false}}
-function url(refId){return C.urlPrefix+refId}
-function copyBody(records){return Object.entries(records).map(([id,r])=>({id:Number(id),name:r.name})).sort((a,b)=>a.id-b.id).map(e=>`${e.id} ${e.name}`).join('\n')}
-async function copyText(text){if(!text)throw new Error('コピーする内容がありません。');if(navigator.clipboard&&window.isSecureContext){try{await navigator.clipboard.writeText(text);return}catch(_){}}const t=document.createElement('textarea');t.value=text;t.readOnly=true;t.style.position='fixed';t.style.top='-1000px';t.style.left='-1000px';t.style.opacity='0';t.style.fontSize='16px';document.body.appendChild(t);t.focus();t.select();t.setSelectionRange(0,t.value.length);const ok=document.execCommand('copy');document.body.removeChild(t);if(!ok)throw new Error('コピーに失敗しました。textarea内の内容を手動でコピーしてください。')}
-function parseImportText(text,kind){const valid=kind==='weekly'?validWeeklyBaseSet():null,accepted=[],skipped=[];const lines=String(text||'').split(/\r?\n/);lines.forEach((line,i)=>{const s=line.trim();if(!s)return;const m=s.match(/^(\d+)\s+(.+)$/);if(!m){skipped.push(`${i+1}行目: 形式不正`);return}const id=Number(m[1]),name=m[2].trim();if(!Number.isSafeInteger(id)||id<=0||!name){skipped.push(`${i+1}行目: IDまたは名前が不正`);return}if(valid&&!valid.has(String(id))){skipped.push(`${i+1}行目: ${id} は対象外`);return}accepted.push({id,name})});return{accepted,skipped}}
-function importRecords(kind){const area=kind==='weekly'?E.weeklyImportArea:E.directImportArea,msgNode=kind==='weekly'?E.weeklyImportMsg:E.directImportMsg,records=kind==='weekly'?data.weeklyRecords:data.directRefRecords;const {accepted,skipped}=parseImportText(area.value,kind);if(!accepted.length){msg(msgNode,skipped.length?`取り込める行がありません。${skipped.slice(0,3).join(' / ')}`:'インポートする内容を入力してください。','ng');return}const now=new Date().toISOString();for(const item of accepted)records[String(item.id)]={name:item.name,updatedAt:now};const ok=persist();if(kind==='weekly'){renderWeeklyBaseSelect(selectedWeeklyBase());renderWeeklyList();updateWeeklyView()}else{renderDirectList();updateDirectView()}const detail=skipped.length?` / スキップ ${skipped.length}行`:'';msg(msgNode,ok?`${accepted.length}件インポートしました${detail}。`:`一時的に${accepted.length}件反映しましたが、保存に失敗しました${detail}。`,ok?'ok':'ng')}
-function renderTable(target,records,emptyText,mode){const rows=Object.entries(records).map(([id,r])=>({id:Number(id),name:r.name,updatedAt:r.updatedAt})).sort((a,b)=>a.id-b.id);if(!rows.length){target.innerHTML=`<div class="empty">${esc(emptyText)}</div>`;return}target.innerHTML=`<table><thead><tr><th>ID</th><th>名前</th><th>更新日時</th></tr></thead><tbody>${rows.map(r=>`<tr><td><button class="idbtn" type="button" data-select-mode="${mode}" data-select-id="${r.id}" title="${r.id}をiframeで表示">${r.id}</button></td><td>${esc(r.name)}</td><td>${esc(fmtDate(r.updatedAt))}</td></tr>`).join('')}</tbody></table>`}
-function renderWeeklyBaseSelect(keep){const current=keep||Number(E.weeklyBaseId.value)||C.start;E.weeklyBaseId.textContent='';for(const id of baseIds()){const o=document.createElement('option'),name=data.weeklyRecords[String(id)]?.name||'';o.value=String(id);o.textContent=name?`${id} / ${name}`:String(id);E.weeklyBaseId.appendChild(o)}E.weeklyBaseId.value=String(current)}
-function renderWeeklyWeekSelect(){for(let w=1;w<=C.weeks;w++){const o=document.createElement('option');o.value=String(w);o.textContent=`第${w}週`;E.weeklyWeek.appendChild(o)}}
-function selectedWeeklyBase(){return Number(E.weeklyBaseId.value)}
-function selectedWeeklyWeek(){return Number(E.weeklyWeek.value)}
-function weeklyActual(base,week){return base+(week-1)*C.weekStep}
-function updateWeeklyView(){const base=selectedWeeklyBase(),week=selectedWeeklyWeek(),actual=weeklyActual(base,week),u=url(actual),name=data.weeklyRecords[String(base)]?.name||'';E.weeklyCurrentName.textContent=name||'未登録';E.weeklyCurrentBase.textContent=String(base);E.weeklyCurrentActual.textContent=String(actual);E.weeklyCurrentWeek.textContent=`第${week}週`;E.weeklyNameInput.value=name;E.weeklyUrlText.textContent=u;E.weeklyOpenUrl.href=u;if(E.weeklyFrame.getAttribute('src')!==u)E.weeklyFrame.src=u}
-function renderWeeklyList(){const body=copyBody(data.weeklyRecords),count=Object.keys(data.weeklyRecords).length;E.weeklyCopyArea.value=body;E.weeklyCount.textContent=`${count}件`;E.weeklyCopyAll.disabled=count===0;renderTable(E.weeklyTable,data.weeklyRecords,'登録済みの名前はまだありません。','weekly')}
-function saveWeeklyName(){const base=selectedWeeklyBase(),name=E.weeklyNameInput.value.trim();if(name)data.weeklyRecords[String(base)]={name,updatedAt:new Date().toISOString()};else delete data.weeklyRecords[String(base)];const ok=persist();renderWeeklyBaseSelect(base);updateWeeklyView();renderWeeklyList();msg(E.weeklyNameMsg,ok?(name?`${base} に「${name}」を保存しました。`:`${base} の登録名を削除しました。`):'一時的に反映しましたが、ブラウザ保存には失敗しました。',ok?'ok':'ng')}
-function parseDirectInput(){const raw=E.directRefInput.value.trim();if(!raw)throw new Error('ref IDを入力してください。');if(!/^\d+$/.test(raw))throw new Error('ref IDは数字のみで入力してください。');const id=Number(raw);if(!Number.isSafeInteger(id)||id<=0)throw new Error('ref IDは1以上の安全な整数で入力してください。');return id}
-function setDirectRef(id){directCurrentRefId=id;E.directRefInput.value=String(id);updateDirectView()}
-function updateDirectView(){const has=Number.isSafeInteger(directCurrentRefId)&&directCurrentRefId>0,name=has?(data.directRefRecords[String(directCurrentRefId)]?.name||''):'',u=has?url(directCurrentRefId):'';E.directCurrentName.textContent=name||'未登録';E.directCurrentId.textContent=has?String(directCurrentRefId):'-';E.directNameInput.value=name;E.directUrlText.textContent=has?u:'未表示';E.directOpenUrl.href=has?u:'#';E.directCopyCurrent.disabled=!has;E.directSaveName.disabled=!has;if(has&&E.directFrame.getAttribute('src')!==u)E.directFrame.src=u}
-function applyDirect(){try{const id=parseDirectInput();setDirectRef(id);msg(E.directSideMsg,`${id} を表示しました。`,'ok')}catch(e){msg(E.directSideMsg,e.message,'ng')}}
-function stepDirect(delta){try{const cur=parseDirectInput(),next=cur+delta;if(!Number.isSafeInteger(next)||next<=0)throw new Error('計算後のref IDが不正です。');setDirectRef(next);msg(E.directSideMsg,`${cur} から ${next} に変更しました。`,'ok')}catch(e){msg(E.directSideMsg,e.message,'ng')}}
-function renderDirectList(){const body=copyBody(data.directRefRecords),count=Object.keys(data.directRefRecords).length;E.directCopyArea.value=body;E.directCount.textContent=`${count}件`;E.directCopyAll.disabled=count===0;renderTable(E.directTable,data.directRefRecords,'登録済みのref IDはまだありません。','direct')}
-function saveDirectName(){if(!Number.isSafeInteger(directCurrentRefId)||directCurrentRefId<=0){msg(E.directNameMsg,'先に有効なref IDを表示してください。','ng');return}const name=E.directNameInput.value.trim();if(name)data.directRefRecords[String(directCurrentRefId)]={name,updatedAt:new Date().toISOString()};else delete data.directRefRecords[String(directCurrentRefId)];const ok=persist();updateDirectView();renderDirectList();msg(E.directNameMsg,ok?(name?`${directCurrentRefId} に「${name}」を保存しました。`:`${directCurrentRefId} の登録名を削除しました。`):'一時的に反映しましたが、ブラウザ保存には失敗しました。',ok?'ok':'ng')}
-function switchTab(tab){const weekly=tab==='weekly';E.weeklyPanel.hidden=!weekly;E.directPanel.hidden=weekly;for(const b of E.tabs)b.classList.toggle('active',b.dataset.tab===tab)}
-function selectSavedWeekly(id){if(!validWeeklyBaseSet().has(String(id))){msg(E.weeklyCopyMsg,'このIDは第1週IDとして選択できません。','ng');return}E.weeklyBaseId.value=String(id);updateWeeklyView();switchTab('weekly');msg(E.weeklyCopyMsg,`${id} を選択してiframeを切り替えました。`,'ok')}
-function selectSavedDirect(id){if(!Number.isSafeInteger(id)||id<=0){msg(E.directCopyMsg,'このref IDは選択できません。','ng');return}setDirectRef(id);switchTab('direct');msg(E.directCopyMsg,`${id} をiframeで表示しました。`,'ok')}
-function handleTableSelect(event){const btn=event.target.closest('[data-select-id]');if(!btn)return;const id=Number(btn.dataset.selectId);if(btn.dataset.selectMode==='weekly')selectSavedWeekly(id);else if(btn.dataset.selectMode==='direct')selectSavedDirect(id)}
-function bind(){for(const b of E.tabs)b.addEventListener('click',()=>switchTab(b.dataset.tab));E.weeklyBaseId.addEventListener('change',()=>{msg(E.weeklySideMsg,'');msg(E.weeklyNameMsg,'');updateWeeklyView()});E.weeklyWeek.addEventListener('change',()=>{msg(E.weeklySideMsg,'');updateWeeklyView()});E.weeklySaveName.addEventListener('click',saveWeeklyName);E.weeklyNameInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();saveWeeklyName()}});E.weeklyCopyAll.addEventListener('click',async()=>{try{await copyText(copyBody(data.weeklyRecords));msg(E.weeklyCopyMsg,'登録済み一覧をコピーしました。','ok')}catch(e){E.weeklyCopyArea.focus();E.weeklyCopyArea.select();msg(E.weeklyCopyMsg,e.message,'ng')}});E.weeklyCopyCurrent.addEventListener('click',async()=>{const id=String(weeklyActual(selectedWeeklyBase(),selectedWeeklyWeek()));try{await copyText(id);msg(E.weeklySideMsg,`現在のID ${id} をコピーしました。`,'ok')}catch(e){msg(E.weeklySideMsg,e.message,'ng')}});E.weeklyImport.addEventListener('click',()=>importRecords('weekly'));E.weeklyClearImport.addEventListener('click',()=>{E.weeklyImportArea.value='';msg(E.weeklyImportMsg,'')});E.weeklyTable.addEventListener('click',handleTableSelect);
-E.directApply.addEventListener('click',applyDirect);E.directRefInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();applyDirect()}});for(const b of E.directSteps)b.addEventListener('click',()=>stepDirect(Number(b.dataset.delta)));E.directSaveName.addEventListener('click',saveDirectName);E.directNameInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();saveDirectName()}});E.directCopyAll.addEventListener('click',async()=>{try{await copyText(copyBody(data.directRefRecords));msg(E.directCopyMsg,'登録済みref一覧をコピーしました。','ok')}catch(e){E.directCopyArea.focus();E.directCopyArea.select();msg(E.directCopyMsg,e.message,'ng')}});E.directCopyCurrent.addEventListener('click',async()=>{if(!Number.isSafeInteger(directCurrentRefId)||directCurrentRefId<=0){msg(E.directSideMsg,'先に有効なref IDを表示してください。','ng');return}try{await copyText(String(directCurrentRefId));msg(E.directSideMsg,`現在のref ID ${directCurrentRefId} をコピーしました。`,'ok')}catch(e){msg(E.directSideMsg,e.message,'ng')}});E.directImport.addEventListener('click',()=>importRecords('direct'));E.directClearImport.addEventListener('click',()=>{E.directImportArea.value='';msg(E.directImportMsg,'')});E.directTable.addEventListener('click',handleTableSelect)}
-data=loadData();renderWeeklyWeekSelect();renderWeeklyBaseSelect(C.start);renderWeeklyList();renderDirectList();updateWeeklyView();updateDirectView();bind();
+
+const C = {
+  storageKey: 'sundai-id-viewer-v3',
+  v2Key: 'sundai-id-viewer-v2',
+  legacyWeeklyKey: 'sundai-id-name-records-v1',
+  start: 1516278, end: 1523022, baseStep: 24,
+  weeks: 11, weekStep: 2,
+  historyMax: 50,
+  urlPrefix: 'https://players.streaks.jp/prod-sundai/634f85d3a7674636bd1212b5904b1d81/index.html?m=ref:'
+};
+
+const E = new Proxy({}, { get: (_, id) => document.getElementById(id) });
+const tabs = [...document.querySelectorAll('[data-tab]')];
+const stepButtons = [...document.querySelectorAll('#directPanel [data-delta]')];
+
+const BASE_IDS = (() => { const ids = []; for (let id = C.start; id <= C.end; id += C.baseStep) ids.push(id); return ids; })();
+const BASE_SET = new Set(BASE_IDS.map(String));
+
+const defaultData = () => ({
+  weeklyRecords: {}, directRefRecords: {},
+  hiddenWeeklyIds: [], directHistory: [],
+  settings: { theme: 'auto', weeklyNamedOnly: false }
+});
+
+let storageOk = true;
+let data = defaultData();
+let directCurrentRefId = null;
+const sortState = { weekly: { key: 'id', dir: 1 }, direct: { key: 'id', dir: 1 } };
+
+/* ---------- 汎用 ---------- */
+function msg(node, text, type, action) {
+  node.textContent = text || '';
+  node.classList.remove('ok', 'ng');
+  if (type) node.classList.add(type);
+  if (action) {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'inlineUndo'; b.textContent = action.label;
+    b.addEventListener('click', action.fn, { once: true });
+    node.append(' ', b);
+  }
+}
+function esc(v) { return String(v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[c])); }
+function fmtDate(v) { const d = new Date(v); return v && !Number.isNaN(d.getTime()) ? d.toLocaleString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '-'; }
+function url(refId) { return C.urlPrefix + refId; }
+function copyBody(records) {
+  return Object.entries(records).map(([id, r]) => ({ id: Number(id), name: r.name }))
+    .sort((a, b) => a.id - b.id).map(e => `${e.id} ${e.name}`).join('\n');
+}
+async function copyText(text) {
+  if (!text) throw new Error('コピーする内容がありません。');
+  if (navigator.clipboard && window.isSecureContext) {
+    try { await navigator.clipboard.writeText(text); return; } catch (_) {}
+  }
+  const t = document.createElement('textarea');
+  t.value = text; t.readOnly = true;
+  t.style.cssText = 'position:fixed;top:-1000px;left:-1000px;opacity:0;font-size:16px';
+  document.body.appendChild(t); t.focus(); t.select(); t.setSelectionRange(0, t.value.length);
+  const ok = document.execCommand('copy');
+  document.body.removeChild(t);
+  if (!ok) throw new Error('コピーに失敗しました。textarea内の内容を手動でコピーしてください。');
+}
+
+/* ---------- 保存 / 読み込み ---------- */
+function canStore() {
+  try { localStorage.setItem(C.storageKey + ':test', '1'); localStorage.removeItem(C.storageKey + ':test'); return true; }
+  catch (_) { return false; }
+}
+function normalizeRecords(raw, weeklyOnly) {
+  const out = {};
+  if (!raw || typeof raw !== 'object') return out;
+  for (const [id, v] of Object.entries(raw)) {
+    if (!/^\d+$/.test(id)) continue;
+    const n = Number(id);
+    if (!Number.isSafeInteger(n) || n <= 0) continue;
+    if (weeklyOnly && !BASE_SET.has(id)) continue;
+    const name = typeof v === 'string' ? v.trim() : String((v && v.name) || '').trim();
+    if (name) out[id] = { name, updatedAt: typeof (v && v.updatedAt) === 'string' ? v.updatedAt : '' };
+  }
+  return out;
+}
+function normalizeHidden(raw) {
+  if (!Array.isArray(raw)) return [];
+  const ids = [...new Set(raw.map(String).filter(id => BASE_SET.has(id)))];
+  return ids.length >= BASE_IDS.length ? [] : ids;
+}
+function normalizeHistory(raw) {
+  if (!Array.isArray(raw)) return [];
+  const seen = new Set(), out = [];
+  for (const h of raw) {
+    const id = Number(h && h.id);
+    if (!Number.isSafeInteger(id) || id <= 0 || seen.has(id)) continue;
+    seen.add(id);
+    out.push({ id, at: typeof h.at === 'string' ? h.at : '' });
+    if (out.length >= C.historyMax) break;
+  }
+  return out;
+}
+function normalizeSettings(raw) {
+  const s = raw && typeof raw === 'object' ? raw : {};
+  return {
+    theme: ['auto', 'light', 'dark'].includes(s.theme) ? s.theme : 'auto',
+    weeklyNamedOnly: s.weeklyNamedOnly === true
+  };
+}
+function normalizeAll(raw) {
+  const d = raw && typeof raw === 'object' ? raw : {};
+  return {
+    weeklyRecords: normalizeRecords(d.weeklyRecords, true),
+    directRefRecords: normalizeRecords(d.directRefRecords, false),
+    hiddenWeeklyIds: normalizeHidden(d.hiddenWeeklyIds),
+    directHistory: normalizeHistory(d.directHistory),
+    settings: normalizeSettings(d.settings)
+  };
+}
+function loadData() {
+  storageOk = canStore();
+  if (!storageOk) {
+    msg(E.weeklyNameMsg, 'localStorageを使用できません。リロード後の保存は保証されません。', 'ng');
+    msg(E.directNameMsg, 'localStorageを使用できません。リロード後の保存は保証されません。', 'ng');
+    return defaultData();
+  }
+  try {
+    const v3 = JSON.parse(localStorage.getItem(C.storageKey) || 'null');
+    if (v3) return normalizeAll(v3);
+    const v2 = JSON.parse(localStorage.getItem(C.v2Key) || '{}');
+    const legacy = JSON.parse(localStorage.getItem(C.legacyWeeklyKey) || '{}');
+    return normalizeAll({
+      weeklyRecords: Object.keys(v2.weeklyRecords || {}).length ? v2.weeklyRecords : legacy,
+      directRefRecords: v2.directRefRecords
+    });
+  } catch (_) {
+    msg(E.weeklyNameMsg, '保存データの読み込みに失敗しました。', 'ng');
+    msg(E.directNameMsg, '保存データの読み込みに失敗しました。', 'ng');
+    return defaultData();
+  }
+}
+function persist() {
+  if (!storageOk) return false;
+  try { localStorage.setItem(C.storageKey, JSON.stringify(data)); return true; }
+  catch (_) { return false; }
+}
+
+/* ---------- テーマ ---------- */
+function applyTheme() {
+  const t = data.settings.theme;
+  if (t === 'auto') document.documentElement.removeAttribute('data-theme');
+  else document.documentElement.setAttribute('data-theme', t);
+  E.themeToggle.textContent = { auto: 'テーマ: 自動', light: 'テーマ: ライト', dark: 'テーマ: ダーク' }[t];
+}
+function cycleTheme() {
+  const order = ['auto', 'light', 'dark'];
+  data.settings.theme = order[(order.indexOf(data.settings.theme) + 1) % order.length];
+  persist(); applyTheme();
+}
+
+/* ---------- URLハッシュで状態を共有 ---------- */
+function syncHash() {
+  const p = new URLSearchParams();
+  p.set('tab', E.weeklyPanel.hidden ? 'direct' : 'weekly');
+  p.set('base', E.weeklyBaseId.value);
+  p.set('week', E.weeklyWeek.value);
+  if (Number.isSafeInteger(directCurrentRefId) && directCurrentRefId > 0) p.set('ref', String(directCurrentRefId));
+  history.replaceState(null, '', '#' + p.toString());
+}
+function parseHash() {
+  const p = new URLSearchParams(location.hash.slice(1));
+  const base = Number(p.get('base')), week = Number(p.get('week')), ref = Number(p.get('ref'));
+  return {
+    tab: p.get('tab') === 'direct' ? 'direct' : 'weekly',
+    base: BASE_SET.has(String(base)) ? base : null,
+    week: Number.isInteger(week) && week >= 1 && week <= C.weeks ? week : null,
+    ref: Number.isSafeInteger(ref) && ref > 0 ? ref : null
+  };
+}
+
+/* ---------- 週選択: 選択肢の表示 / 非表示 ---------- */
+function optionLabel(id) {
+  const name = data.weeklyRecords[String(id)]?.name || '';
+  return name ? `${id} / ${name}` : String(id);
+}
+function visibleBaseIds() {
+  const hidden = new Set(data.hiddenWeeklyIds);
+  const shown = BASE_IDS.filter(id => !hidden.has(String(id)));
+  const base = shown.length ? shown : BASE_IDS.slice();
+  if (data.settings.weeklyNamedOnly) {
+    const named = base.filter(id => data.weeklyRecords[String(id)]);
+    if (named.length) return named;
+  }
+  return base;
+}
+function renderWeeklyBaseSelect(keep) {
+  const current = Number(keep ?? E.weeklyBaseId.value) || C.start;
+  const q = E.weeklySelectSearch.value.trim().toLowerCase();
+  let ids = visibleBaseIds();
+  if (q) ids = ids.filter(id => optionLabel(id).toLowerCase().includes(q));
+  if (!ids.includes(current) && BASE_SET.has(String(current))) ids = [current, ...ids];
+  if (!ids.length) ids = [current];
+  E.weeklyBaseId.textContent = '';
+  for (const id of ids) {
+    const o = document.createElement('option');
+    o.value = String(id); o.textContent = optionLabel(id);
+    E.weeklyBaseId.appendChild(o);
+  }
+  E.weeklyBaseId.value = String(current);
+}
+function updateHiddenCount() {
+  E.weeklyHiddenCount.textContent = `非表示: ${data.hiddenWeeklyIds.length}件 / 全${BASE_IDS.length}件`;
+}
+function renderHiddenManager() {
+  if (!E.hiddenManager.open) return;
+  const q = E.hiddenSearch.value.trim().toLowerCase();
+  const hidden = new Set(data.hiddenWeeklyIds);
+  const rows = q ? BASE_IDS.filter(id => optionLabel(id).toLowerCase().includes(q)) : BASE_IDS;
+  E.hiddenList.innerHTML = rows.length ? rows.map(id => {
+    const h = hidden.has(String(id));
+    const name = data.weeklyRecords[String(id)]?.name || '';
+    return `<label class="hiddenRow${h ? ' isHidden' : ''}"><input type="checkbox" data-vis-id="${id}"${h ? '' : ' checked'}><span class="mono">${id}</span><span class="hname">${esc(name)}</span></label>`;
+  }).join('') : '<div class="empty">該当するIDがありません。</div>';
+}
+function afterHiddenChange(keepBase) {
+  persist();
+  updateHiddenCount();
+  renderWeeklyBaseSelect(keepBase);
+  renderHiddenManager();
+  updateWeeklyView();
+}
+function hideCurrentWeekly() {
+  const id = selectedWeeklyBase();
+  const hidden = new Set(data.hiddenWeeklyIds);
+  if (hidden.has(String(id))) { msg(E.weeklySideMsg, `${id} はすでに非表示です。`, 'ng'); return; }
+  if (BASE_IDS.length - hidden.size <= 1) { msg(E.weeklySideMsg, '最後の1件は非表示にできません。', 'ng'); return; }
+  hidden.add(String(id));
+  data.hiddenWeeklyIds = [...hidden];
+  const rest = BASE_IDS.filter(b => !hidden.has(String(b)));
+  const next = rest.find(b => b > id) ?? rest[rest.length - 1];
+  afterHiddenChange(next);
+  msg(E.weeklySideMsg, `${id} を選択肢から非表示にしました。`, 'ok', {
+    label: '元に戻す',
+    fn: () => { data.hiddenWeeklyIds = data.hiddenWeeklyIds.filter(v => v !== String(id)); afterHiddenChange(id); msg(E.weeklySideMsg, `${id} を表示に戻しました。`, 'ok'); }
+  });
+}
+function restoreWeeklyId(id) {
+  if (!data.hiddenWeeklyIds.includes(String(id))) return false;
+  data.hiddenWeeklyIds = data.hiddenWeeklyIds.filter(v => v !== String(id));
+  return true;
+}
+
+/* ---------- 週選択: 表示 ---------- */
+function renderWeeklyWeekSelect() {
+  for (let w = 1; w <= C.weeks; w++) {
+    const o = document.createElement('option');
+    o.value = String(w);
+    o.textContent = `第${w}週（+${(w - 1) * C.weekStep}）`;
+    E.weeklyWeek.appendChild(o);
+  }
+}
+function selectedWeeklyBase() { return Number(E.weeklyBaseId.value); }
+function selectedWeeklyWeek() { return Number(E.weeklyWeek.value); }
+function weeklyActual(base, week) { return base + (week - 1) * C.weekStep; }
+function currentWeeklyUrl() { return url(weeklyActual(selectedWeeklyBase(), selectedWeeklyWeek())); }
+function updateWeeklyView() {
+  const base = selectedWeeklyBase(), week = selectedWeeklyWeek();
+  const actual = weeklyActual(base, week), u = url(actual);
+  const name = data.weeklyRecords[String(base)]?.name || '';
+  E.weeklyCurrentName.textContent = name || '未登録';
+  E.weeklyCurrentBase.textContent = String(base);
+  E.weeklyCurrentActual.textContent = String(actual);
+  E.weeklyCurrentWeek.textContent = `第${week}週`;
+  E.weeklyNameInput.value = name;
+  E.weeklyUrlText.textContent = u;
+  E.weeklyOpenUrl.href = u;
+  if (E.weeklyFrame.getAttribute('src') !== u) E.weeklyFrame.src = u;
+  syncHash();
+}
+function stepSelect(select, dir, msgNode, after) {
+  const i = select.selectedIndex + dir;
+  if (i < 0 || i >= select.options.length) { msg(msgNode, 'これ以上移動できません。', 'ng'); return; }
+  select.selectedIndex = i;
+  msg(msgNode, '');
+  after();
+}
+
+/* ---------- 一覧テーブル（共通） ---------- */
+function kindParts(kind) {
+  const w = kind === 'weekly';
+  return {
+    records: w ? data.weeklyRecords : data.directRefRecords,
+    table: w ? E.weeklyTable : E.directTable,
+    search: w ? E.weeklyListSearch : E.directListSearch,
+    copyArea: w ? E.weeklyCopyArea : E.directCopyArea,
+    count: w ? E.weeklyCount : E.directCount,
+    copyAll: w ? E.weeklyCopyAll : E.directCopyAll,
+    copyMsg: w ? E.weeklyCopyMsg : E.directCopyMsg,
+    empty: w ? '登録済みの名前はまだありません。' : '登録済みのref IDはまだありません。'
+  };
+}
+function renderList(kind) {
+  const P = kindParts(kind);
+  const st = sortState[kind];
+  const q = P.search.value.trim().toLowerCase();
+  P.copyArea.value = copyBody(P.records);
+  const total = Object.keys(P.records).length;
+  P.copyAll.disabled = total === 0;
+  let rows = Object.entries(P.records).map(([id, r]) => ({ id: Number(id), name: r.name, updatedAt: r.updatedAt || '' }));
+  if (q) rows = rows.filter(r => String(r.id).includes(q) || r.name.toLowerCase().includes(q));
+  P.count.textContent = q ? `${rows.length}件 / 全${total}件` : `${total}件`;
+  rows.sort((a, b) => {
+    let c;
+    if (st.key === 'name') c = a.name.localeCompare(b.name, 'ja');
+    else if (st.key === 'updatedAt') c = a.updatedAt < b.updatedAt ? -1 : a.updatedAt > b.updatedAt ? 1 : 0;
+    else c = a.id - b.id;
+    return c * st.dir || a.id - b.id;
+  });
+  if (!rows.length) { P.table.innerHTML = `<div class="empty">${esc(q ? '検索に一致する登録がありません。' : P.empty)}</div>`; return; }
+  const arrow = k => st.key === k ? (st.dir === 1 ? ' ▲' : ' ▼') : '';
+  P.table.innerHTML = `<table><thead><tr>
+    <th><button class="thbtn" type="button" data-sort-key="id">ID${arrow('id')}</button></th>
+    <th><button class="thbtn" type="button" data-sort-key="name">名前${arrow('name')}</button></th>
+    <th><button class="thbtn" type="button" data-sort-key="updatedAt">更新日時${arrow('updatedAt')}</button></th>
+    <th>操作</th></tr></thead><tbody>${rows.map(r =>
+    `<tr><td><button class="idbtn" type="button" data-select-id="${r.id}" title="${r.id}をiframeで表示">${r.id}</button></td>
+    <td>${esc(r.name)}</td><td>${esc(fmtDate(r.updatedAt))}</td>
+    <td><button class="minibtn danger" type="button" data-del-id="${r.id}">削除</button></td></tr>`).join('')}</tbody></table>`;
+}
+function rerenderKind(kind) {
+  renderList(kind);
+  if (kind === 'weekly') { renderWeeklyBaseSelect(); renderHiddenManager(); updateWeeklyView(); }
+  else updateDirectView();
+}
+function deleteRecord(kind, id) {
+  const P = kindParts(kind);
+  const rec = P.records[String(id)];
+  if (!rec) return;
+  delete P.records[String(id)];
+  const ok = persist();
+  rerenderKind(kind);
+  msg(P.copyMsg, ok ? `${id} の登録を削除しました。` : `${id} を削除しましたが、保存に失敗しました。`, ok ? 'ok' : 'ng', {
+    label: '元に戻す',
+    fn: () => {
+      kindParts(kind).records[String(id)] = rec;
+      persist(); rerenderKind(kind);
+      msg(kindParts(kind).copyMsg, `${id} の削除を取り消しました。`, 'ok');
+    }
+  });
+}
+function handleTableClick(kind, event) {
+  const sort = event.target.closest('[data-sort-key]');
+  if (sort) {
+    const st = sortState[kind];
+    if (st.key === sort.dataset.sortKey) st.dir = -st.dir;
+    else { st.key = sort.dataset.sortKey; st.dir = 1; }
+    renderList(kind);
+    return;
+  }
+  const del = event.target.closest('[data-del-id]');
+  if (del) { deleteRecord(kind, Number(del.dataset.delId)); return; }
+  const sel = event.target.closest('[data-select-id]');
+  if (sel) {
+    const id = Number(sel.dataset.selectId);
+    if (kind === 'weekly') selectSavedWeekly(id);
+    else selectSavedDirect(id);
+  }
+}
+
+/* ---------- 週選択: 保存 / 選択 ---------- */
+function saveWeeklyName() {
+  const base = selectedWeeklyBase(), name = E.weeklyNameInput.value.trim();
+  if (name) data.weeklyRecords[String(base)] = { name, updatedAt: new Date().toISOString() };
+  else delete data.weeklyRecords[String(base)];
+  const ok = persist();
+  renderWeeklyBaseSelect(base); renderHiddenManager(); updateWeeklyView(); renderList('weekly');
+  msg(E.weeklyNameMsg, ok ? (name ? `${base} に「${name}」を保存しました。` : `${base} の登録名を削除しました。`) : '一時的に反映しましたが、ブラウザ保存には失敗しました。', ok ? 'ok' : 'ng');
+}
+function selectSavedWeekly(id) {
+  if (!BASE_SET.has(String(id))) { msg(E.weeklyCopyMsg, 'このIDは第1週IDとして選択できません。', 'ng'); return; }
+  const restored = restoreWeeklyId(id);
+  if (restored) { persist(); updateHiddenCount(); renderHiddenManager(); }
+  renderWeeklyBaseSelect(id);
+  updateWeeklyView();
+  switchTab('weekly');
+  msg(E.weeklyCopyMsg, restored ? `${id} の非表示を解除して選択しました。` : `${id} を選択してiframeを切り替えました。`, 'ok');
+}
+
+/* ---------- ref直接入力 ---------- */
+function parseDirectInput() {
+  const raw = E.directRefInput.value.trim();
+  if (!raw) throw new Error('ref IDを入力してください。');
+  if (!/^\d+$/.test(raw)) throw new Error('ref IDは数字のみで入力してください。');
+  const id = Number(raw);
+  if (!Number.isSafeInteger(id) || id <= 0) throw new Error('ref IDは1以上の安全な整数で入力してください。');
+  return id;
+}
+function pushHistory(id) {
+  data.directHistory = [{ id, at: new Date().toISOString() }, ...data.directHistory.filter(h => h.id !== id)].slice(0, C.historyMax);
+  persist();
+  renderHistory();
+}
+function setDirectRef(id) {
+  directCurrentRefId = id;
+  E.directRefInput.value = String(id);
+  updateDirectView();
+  pushHistory(id);
+}
+function updateDirectView() {
+  const has = Number.isSafeInteger(directCurrentRefId) && directCurrentRefId > 0;
+  const name = has ? (data.directRefRecords[String(directCurrentRefId)]?.name || '') : '';
+  const u = has ? url(directCurrentRefId) : '';
+  E.directCurrentName.textContent = name || '未登録';
+  E.directCurrentId.textContent = has ? String(directCurrentRefId) : '-';
+  E.directNameInput.value = name;
+  E.directUrlText.textContent = has ? u : '未表示';
+  E.directOpenUrl.href = has ? u : '#';
+  E.directCopyCurrent.disabled = !has;
+  E.directCopyUrl.disabled = !has;
+  E.directReload.disabled = !has;
+  E.directSaveName.disabled = !has;
+  if (has && E.directFrame.getAttribute('src') !== u) E.directFrame.src = u;
+  syncHash();
+}
+function applyDirect() {
+  try {
+    const id = parseDirectInput();
+    setDirectRef(id);
+    msg(E.directSideMsg, `${id} を表示しました。`, 'ok');
+  } catch (e) { msg(E.directSideMsg, e.message, 'ng'); }
+}
+function stepDirect(delta) {
+  try {
+    const cur = parseDirectInput(), next = cur + delta;
+    if (!Number.isSafeInteger(next) || next <= 0) throw new Error('計算後のref IDが不正です。');
+    setDirectRef(next);
+    msg(E.directSideMsg, `${cur} から ${next} に変更しました。`, 'ok');
+  } catch (e) { msg(E.directSideMsg, e.message, 'ng'); }
+}
+function customStepDirect(sign) {
+  const v = Math.trunc(Number(E.directCustomStep.value));
+  if (!Number.isSafeInteger(v) || v <= 0) { msg(E.directSideMsg, 'カスタム増減値は1以上の整数で入力してください。', 'ng'); return; }
+  stepDirect(sign * v);
+}
+function saveDirectName() {
+  if (!Number.isSafeInteger(directCurrentRefId) || directCurrentRefId <= 0) { msg(E.directNameMsg, '先に有効なref IDを表示してください。', 'ng'); return; }
+  const name = E.directNameInput.value.trim();
+  if (name) data.directRefRecords[String(directCurrentRefId)] = { name, updatedAt: new Date().toISOString() };
+  else delete data.directRefRecords[String(directCurrentRefId)];
+  const ok = persist();
+  updateDirectView(); renderList('direct'); renderHistory();
+  msg(E.directNameMsg, ok ? (name ? `${directCurrentRefId} に「${name}」を保存しました。` : `${directCurrentRefId} の登録名を削除しました。`) : '一時的に反映しましたが、ブラウザ保存には失敗しました。', ok ? 'ok' : 'ng');
+}
+function selectSavedDirect(id) {
+  if (!Number.isSafeInteger(id) || id <= 0) { msg(E.directCopyMsg, 'このref IDは選択できません。', 'ng'); return; }
+  setDirectRef(id);
+  switchTab('direct');
+  msg(E.directCopyMsg, `${id} をiframeで表示しました。`, 'ok');
+}
+function renderHistory() {
+  const list = data.directHistory;
+  E.directHistoryCount.textContent = `${list.length}件`;
+  E.directHistoryClear.disabled = !list.length;
+  if (!list.length) { E.directHistoryList.innerHTML = '<div class="empty">履歴はまだありません。</div>'; return; }
+  E.directHistoryList.innerHTML = `<table><thead><tr><th>ref ID</th><th>登録名</th><th>表示日時</th></tr></thead><tbody>${list.map(h => {
+    const name = data.directRefRecords[String(h.id)]?.name || '';
+    return `<tr><td><button class="idbtn" type="button" data-history-id="${h.id}" title="${h.id}をiframeで表示">${h.id}</button></td><td>${esc(name || '未登録')}</td><td>${esc(fmtDate(h.at))}</td></tr>`;
+  }).join('')}</tbody></table>`;
+}
+
+/* ---------- インポート（コピー形式） ---------- */
+function parseImportText(text, kind) {
+  const weekly = kind === 'weekly';
+  const accepted = [], skipped = [];
+  String(text || '').split(/\r?\n/).forEach((line, i) => {
+    const s = line.trim();
+    if (!s) return;
+    const m = s.match(/^(\d+)\s+(.+)$/);
+    if (!m) { skipped.push(`${i + 1}行目: 形式不正`); return; }
+    const id = Number(m[1]), name = m[2].trim();
+    if (!Number.isSafeInteger(id) || id <= 0 || !name) { skipped.push(`${i + 1}行目: IDまたは名前が不正`); return; }
+    if (weekly && !BASE_SET.has(String(id))) { skipped.push(`${i + 1}行目: ${id} は対象外`); return; }
+    accepted.push({ id, name });
+  });
+  return { accepted, skipped };
+}
+function importRecords(kind) {
+  const w = kind === 'weekly';
+  const area = w ? E.weeklyImportArea : E.directImportArea;
+  const msgNode = w ? E.weeklyImportMsg : E.directImportMsg;
+  const records = w ? data.weeklyRecords : data.directRefRecords;
+  const { accepted, skipped } = parseImportText(area.value, kind);
+  if (!accepted.length) {
+    msg(msgNode, skipped.length ? `取り込める行がありません。${skipped.slice(0, 3).join(' / ')}` : 'インポートする内容を入力してください。', 'ng');
+    return;
+  }
+  const now = new Date().toISOString();
+  for (const item of accepted) records[String(item.id)] = { name: item.name, updatedAt: now };
+  const ok = persist();
+  rerenderKind(kind);
+  if (!w) renderHistory();
+  const detail = skipped.length ? ` / スキップ ${skipped.length}行` : '';
+  msg(msgNode, ok ? `${accepted.length}件インポートしました${detail}。` : `一時的に${accepted.length}件反映しましたが、保存に失敗しました${detail}。`, ok ? 'ok' : 'ng');
+}
+
+/* ---------- データ管理（JSONバックアップ） ---------- */
+function exportJson() {
+  const payload = { app: 'sundai-id-viewer', version: 3, exportedAt: new Date().toISOString(), data };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  const d = new Date(), pad = n => String(n).padStart(2, '0');
+  a.href = URL.createObjectURL(blob);
+  a.download = `sundai-viewer-backup-${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}.json`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  msg(E.dataMsg, 'バックアップをダウンロードしました。', 'ok');
+}
+function importJson(text) {
+  let payload;
+  try { payload = JSON.parse(text); } catch (_) { msg(E.dataMsg, 'JSONの読み込みに失敗しました。ファイル形式を確認してください。', 'ng'); return; }
+  const incoming = normalizeAll(payload && payload.data ? payload.data : payload);
+  const wCount = Object.keys(incoming.weeklyRecords).length;
+  const dCount = Object.keys(incoming.directRefRecords).length;
+  if (!wCount && !dCount && !incoming.hiddenWeeklyIds.length && !incoming.directHistory.length) {
+    msg(E.dataMsg, '取り込めるデータが見つかりませんでした。', 'ng');
+    return;
+  }
+  Object.assign(data.weeklyRecords, incoming.weeklyRecords);
+  Object.assign(data.directRefRecords, incoming.directRefRecords);
+  data.hiddenWeeklyIds = normalizeHidden([...data.hiddenWeeklyIds, ...incoming.hiddenWeeklyIds]);
+  data.directHistory = normalizeHistory([...incoming.directHistory, ...data.directHistory]
+    .sort((a, b) => (b.at || '') < (a.at || '') ? -1 : 1));
+  data.settings = incoming.settings;
+  const ok = persist();
+  applyTheme();
+  E.weeklyNamedOnly.checked = data.settings.weeklyNamedOnly;
+  updateHiddenCount(); renderHiddenManager();
+  rerenderKind('weekly'); rerenderKind('direct'); renderHistory();
+  msg(E.dataMsg, ok ? `インポートしました（週選択 ${wCount}件 / ref ${dCount}件 / 非表示 ${incoming.hiddenWeeklyIds.length}件 / 履歴 ${incoming.directHistory.length}件）。` : 'インポートしましたが、ブラウザ保存には失敗しました。', ok ? 'ok' : 'ng');
+}
+function resetAll() {
+  if (!confirm('登録名・非表示設定・履歴・テーマなど、すべてのデータを削除します。よろしいですか？')) return;
+  try {
+    localStorage.removeItem(C.storageKey);
+    localStorage.removeItem(C.v2Key);
+    localStorage.removeItem(C.legacyWeeklyKey);
+  } catch (_) {}
+  data = defaultData();
+  directCurrentRefId = null;
+  E.directRefInput.value = '';
+  E.weeklyNamedOnly.checked = false;
+  applyTheme();
+  updateHiddenCount(); renderHiddenManager();
+  renderWeeklyBaseSelect(C.start); renderList('weekly'); updateWeeklyView();
+  renderList('direct'); renderHistory(); updateDirectView();
+  msg(E.dataMsg, 'すべてのデータを削除しました。', 'ok');
+}
+
+/* ---------- タブ ---------- */
+function switchTab(tab) {
+  const weekly = tab === 'weekly';
+  E.weeklyPanel.hidden = !weekly;
+  E.directPanel.hidden = weekly;
+  for (const b of tabs) b.classList.toggle('active', b.dataset.tab === tab);
+  syncHash();
+}
+
+/* ---------- イベント ---------- */
+function bind() {
+  E.themeToggle.addEventListener('click', cycleTheme);
+  for (const b of tabs) b.addEventListener('click', () => switchTab(b.dataset.tab));
+
+  // 週選択: 選択・移動
+  E.weeklyBaseId.addEventListener('change', () => { msg(E.weeklySideMsg, ''); msg(E.weeklyNameMsg, ''); updateWeeklyView(); });
+  E.weeklyWeek.addEventListener('change', () => { msg(E.weeklySideMsg, ''); updateWeeklyView(); });
+  E.weeklySelectSearch.addEventListener('input', () => renderWeeklyBaseSelect());
+  E.weeklyNamedOnly.addEventListener('change', () => {
+    data.settings.weeklyNamedOnly = E.weeklyNamedOnly.checked;
+    persist(); renderWeeklyBaseSelect(); updateWeeklyView();
+  });
+  E.weeklyPrevBase.addEventListener('click', () => stepSelect(E.weeklyBaseId, -1, E.weeklySideMsg, updateWeeklyView));
+  E.weeklyNextBase.addEventListener('click', () => stepSelect(E.weeklyBaseId, 1, E.weeklySideMsg, updateWeeklyView));
+  E.weeklyPrevWeek.addEventListener('click', () => stepSelect(E.weeklyWeek, -1, E.weeklySideMsg, updateWeeklyView));
+  E.weeklyNextWeek.addEventListener('click', () => stepSelect(E.weeklyWeek, 1, E.weeklySideMsg, updateWeeklyView));
+
+  // 週選択: 非表示管理
+  E.weeklyHideCurrent.addEventListener('click', hideCurrentWeekly);
+  E.weeklyOpenManager.addEventListener('click', () => {
+    E.hiddenManager.open = true;
+    renderHiddenManager();
+    E.hiddenManager.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  E.hiddenManager.addEventListener('toggle', renderHiddenManager);
+  E.hiddenSearch.addEventListener('input', renderHiddenManager);
+  E.hiddenList.addEventListener('change', e => {
+    const cb = e.target.closest('[data-vis-id]');
+    if (!cb) return;
+    const id = cb.dataset.visId;
+    const hidden = new Set(data.hiddenWeeklyIds);
+    if (cb.checked) hidden.delete(id);
+    else {
+      if (BASE_IDS.length - hidden.size <= 1) {
+        cb.checked = true;
+        msg(E.weeklyHideMsg, '最後の1件は非表示にできません。', 'ng');
+        return;
+      }
+      hidden.add(id);
+    }
+    data.hiddenWeeklyIds = [...hidden];
+    persist();
+    cb.closest('label').classList.toggle('isHidden', !cb.checked);
+    updateHiddenCount();
+    renderWeeklyBaseSelect();
+    updateWeeklyView();
+    msg(E.weeklyHideMsg, cb.checked ? `${id} を表示に戻しました。` : `${id} を非表示にしました。`, 'ok');
+  });
+  E.hiddenShowAll.addEventListener('click', () => {
+    if (!data.hiddenWeeklyIds.length) { msg(E.weeklyHideMsg, '非表示のIDはありません。', 'ng'); return; }
+    const n = data.hiddenWeeklyIds.length;
+    data.hiddenWeeklyIds = [];
+    afterHiddenChange();
+    msg(E.weeklyHideMsg, `${n}件をすべて表示に戻しました。`, 'ok');
+  });
+  E.hiddenHideUnnamed.addEventListener('click', () => {
+    const named = BASE_IDS.filter(id => data.weeklyRecords[String(id)]);
+    if (!named.length) { msg(E.weeklyHideMsg, '登録名のあるIDがないため実行できません。', 'ng'); return; }
+    const prev = data.hiddenWeeklyIds;
+    data.hiddenWeeklyIds = BASE_IDS.filter(id => !data.weeklyRecords[String(id)]).map(String);
+    const cur = selectedWeeklyBase();
+    afterHiddenChange(data.weeklyRecords[String(cur)] ? cur : named[0]);
+    msg(E.weeklyHideMsg, `未登録の${data.hiddenWeeklyIds.length}件を非表示にしました。`, 'ok', {
+      label: '元に戻す',
+      fn: () => { data.hiddenWeeklyIds = prev; afterHiddenChange(); msg(E.weeklyHideMsg, '非表示設定を元に戻しました。', 'ok'); }
+    });
+  });
+
+  // 週選択: 名前・一覧
+  E.weeklySaveName.addEventListener('click', saveWeeklyName);
+  E.weeklyNameInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); saveWeeklyName(); } });
+  E.weeklyListSearch.addEventListener('input', () => renderList('weekly'));
+  E.weeklyTable.addEventListener('click', e => handleTableClick('weekly', e));
+  E.weeklyCopyAll.addEventListener('click', async () => {
+    try { await copyText(copyBody(data.weeklyRecords)); msg(E.weeklyCopyMsg, '登録済み一覧をコピーしました。', 'ok'); }
+    catch (e) { E.weeklyCopyArea.focus(); E.weeklyCopyArea.select(); msg(E.weeklyCopyMsg, e.message, 'ng'); }
+  });
+  E.weeklyCopyCurrent.addEventListener('click', async () => {
+    const id = String(weeklyActual(selectedWeeklyBase(), selectedWeeklyWeek()));
+    try { await copyText(id); msg(E.weeklySideMsg, `現在のID ${id} をコピーしました。`, 'ok'); }
+    catch (e) { msg(E.weeklySideMsg, e.message, 'ng'); }
+  });
+  E.weeklyCopyUrl.addEventListener('click', async () => {
+    try { await copyText(currentWeeklyUrl()); msg(E.weeklySideMsg, '現在のURLをコピーしました。', 'ok'); }
+    catch (e) { msg(E.weeklySideMsg, e.message, 'ng'); }
+  });
+  E.weeklyReload.addEventListener('click', () => { E.weeklyFrame.src = currentWeeklyUrl(); msg(E.weeklySideMsg, 'iframeを再読み込みしました。', 'ok'); });
+  E.weeklyFullscreen.addEventListener('click', () => {
+    E.weeklyFrame.requestFullscreen?.().catch(() => msg(E.weeklySideMsg, '全画面表示に失敗しました。', 'ng'));
+  });
+  E.weeklyImport.addEventListener('click', () => importRecords('weekly'));
+  E.weeklyClearImport.addEventListener('click', () => { E.weeklyImportArea.value = ''; msg(E.weeklyImportMsg, ''); });
+
+  // ref直接入力
+  E.directApply.addEventListener('click', applyDirect);
+  E.directRefInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); applyDirect(); } });
+  for (const b of stepButtons) b.addEventListener('click', () => stepDirect(Number(b.dataset.delta)));
+  E.directCustomMinus.addEventListener('click', () => customStepDirect(-1));
+  E.directCustomPlus.addEventListener('click', () => customStepDirect(1));
+  E.directSaveName.addEventListener('click', saveDirectName);
+  E.directNameInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); saveDirectName(); } });
+  E.directListSearch.addEventListener('input', () => renderList('direct'));
+  E.directTable.addEventListener('click', e => handleTableClick('direct', e));
+  E.directCopyAll.addEventListener('click', async () => {
+    try { await copyText(copyBody(data.directRefRecords)); msg(E.directCopyMsg, '登録済みref一覧をコピーしました。', 'ok'); }
+    catch (e) { E.directCopyArea.focus(); E.directCopyArea.select(); msg(E.directCopyMsg, e.message, 'ng'); }
+  });
+  E.directCopyCurrent.addEventListener('click', async () => {
+    try { await copyText(String(directCurrentRefId)); msg(E.directSideMsg, `現在のref ID ${directCurrentRefId} をコピーしました。`, 'ok'); }
+    catch (e) { msg(E.directSideMsg, e.message, 'ng'); }
+  });
+  E.directCopyUrl.addEventListener('click', async () => {
+    try { await copyText(url(directCurrentRefId)); msg(E.directSideMsg, '現在のURLをコピーしました。', 'ok'); }
+    catch (e) { msg(E.directSideMsg, e.message, 'ng'); }
+  });
+  E.directReload.addEventListener('click', () => { E.directFrame.src = url(directCurrentRefId); msg(E.directSideMsg, 'iframeを再読み込みしました。', 'ok'); });
+  E.directFullscreen.addEventListener('click', () => {
+    E.directFrame.requestFullscreen?.().catch(() => msg(E.directSideMsg, '全画面表示に失敗しました。', 'ng'));
+  });
+  E.directHistoryList.addEventListener('click', e => {
+    const btn = e.target.closest('[data-history-id]');
+    if (!btn) return;
+    setDirectRef(Number(btn.dataset.historyId));
+    msg(E.directHistoryMsg, `${btn.dataset.historyId} を再表示しました。`, 'ok');
+  });
+  E.directHistoryClear.addEventListener('click', () => {
+    const prev = data.directHistory;
+    data.directHistory = [];
+    persist(); renderHistory();
+    msg(E.directHistoryMsg, `履歴${prev.length}件をクリアしました。`, 'ok', {
+      label: '元に戻す',
+      fn: () => { data.directHistory = prev; persist(); renderHistory(); msg(E.directHistoryMsg, '履歴を復元しました。', 'ok'); }
+    });
+  });
+  E.directImport.addEventListener('click', () => importRecords('direct'));
+  E.directClearImport.addEventListener('click', () => { E.directImportArea.value = ''; msg(E.directImportMsg, ''); });
+
+  // データ管理
+  E.exportData.addEventListener('click', exportJson);
+  E.importDataBtn.addEventListener('click', () => E.importFile.click());
+  E.importFile.addEventListener('change', async () => {
+    const f = E.importFile.files && E.importFile.files[0];
+    E.importFile.value = '';
+    if (!f) return;
+    try { importJson(await f.text()); }
+    catch (_) { msg(E.dataMsg, 'ファイルの読み込みに失敗しました。', 'ng'); }
+  });
+  E.resetAll.addEventListener('click', resetAll);
+}
+
+/* ---------- 初期化 ---------- */
+data = loadData();
+applyTheme();
+E.weeklyNamedOnly.checked = data.settings.weeklyNamedOnly;
+renderWeeklyWeekSelect();
+const initial = parseHash();
+renderWeeklyBaseSelect(initial.base ?? C.start);
+if (initial.week) E.weeklyWeek.value = String(initial.week);
+if (initial.ref) { directCurrentRefId = initial.ref; E.directRefInput.value = String(initial.ref); }
+updateHiddenCount();
+renderList('weekly');
+renderList('direct');
+renderHistory();
+bind();
+updateWeeklyView();
+updateDirectView();
+switchTab(initial.tab);
 })();
 </script>
 </body>
