@@ -1,0 +1,37 @@
+{
+  "name": "Sundai ID Week / Ref Viewer",
+  "short_name": "ID Viewer",
+  "description": "週選択・ref直接入力の2モードでSundaiのIDを表示・管理するビューア。選択肢の非表示・検索・履歴・並べ替え・JSONバックアップに対応。",
+  "lang": "ja",
+  "dir": "ltr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "id": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "orientation": "any",
+  "background_color": "#f6f7fb",
+  "theme_color": "#1f4fd8",
+  "categories": ["education", "utilities", "productivity"],
+  "icons": [
+    { "src": "./icons/favicon-64.png", "sizes": "64x64", "type": "image/png", "purpose": "any" },
+    { "src": "./icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "./icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "./icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ],
+  "shortcuts": [
+    {
+      "name": "週選択モード",
+      "short_name": "週選択",
+      "url": "./index.html#tab=weekly",
+      "icons": [{ "src": "./icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "ref直接入力モード",
+      "short_name": "ref入力",
+      "url": "./index.html#tab=direct",
+      "icons": [{ "src": "./icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

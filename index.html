@@ -2,8 +2,20 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Sundai ID Week / Ref Viewer</title>
+<meta name="description" content="週選択・ref直接入力の2モードでSundaiのIDを表示・管理するビューア。">
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" id="metaThemeColor" content="#1f4fd8">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" type="image/png" sizes="64x64" href="./icons/favicon-64.png">
+<link rel="icon" type="image/svg+xml" href="./icons/icon.svg">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<meta name="application-name" content="ID Viewer">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ID Viewer">
 <style>
 :root{
   color-scheme:light;
@@ -33,11 +45,14 @@
 }
 *{box-sizing:border-box}
 body{margin:0;background:linear-gradient(180deg,var(--bgtop),var(--bg) 300px);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-.wrap{width:min(1180px,calc(100% - 28px));margin:auto;padding:26px 0 44px}
+.wrap{width:min(1180px,calc(100% - 28px));margin:auto;padding:calc(26px + env(safe-area-inset-top)) 0 calc(44px + env(safe-area-inset-bottom))}
 h1{margin:0 0 8px;font-size:clamp(24px,4vw,38px);letter-spacing:-.04em}
 p{line-height:1.65}
 .lead,.hint,.sub{color:var(--muted)}
 .headrow{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.headtools{display:flex;gap:10px;flex-wrap:wrap}
+#installApp{border-color:var(--accent);color:var(--accent)}
+.offline-banner{margin:0 0 4px;padding:11px 14px;border-radius:12px;font-size:13px;font-weight:700;background:var(--danger-bg);color:var(--danger-text);border:1px solid var(--danger-line)}
 .tabs{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}
 .tab{border:1px solid var(--soft-line);border-radius:999px;padding:11px 16px;background:var(--card);color:var(--soft-text);font-weight:800;cursor:pointer}
 .tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
@@ -103,10 +118,14 @@ details.card[open] summary{border-bottom:1px solid var(--line)}
 <header>
   <div class="headrow">
     <h1>Sundai ID Week / Ref Viewer</h1>
-    <button id="themeToggle" class="secondary" type="button" title="テーマを切り替え">テーマ: 自動</button>
+    <div class="headtools">
+      <button id="installApp" class="secondary" type="button" title="アプリとしてインストール" hidden>アプリを追加</button>
+      <button id="themeToggle" class="secondary" type="button" title="テーマを切り替え">テーマ: 自動</button>
+    </div>
   </div>
-  <p class="lead">週選択・ref直接入力の2モード。選択肢の非表示管理 / 検索 / 履歴 / 並べ替え / 削除の取り消し / JSONバックアップ / URL共有（アドレスバーのハッシュに状態を保存）に対応しています。</p>
+  <p class="lead">週選択・ref直接入力の2モード。選択肢の非表示管理 / 検索 / 履歴 / 並べ替え / 削除の取り消し / JSONバックアップ / URL共有（アドレスバーのハッシュに状態を保存）に対応しています。ホーム画面やデスクトップに<strong>アプリとして追加</strong>でき、シェルはオフラインでも起動します。</p>
 </header>
+<div id="offlineBanner" class="offline-banner" role="status" hidden>オフラインです。アプリの操作はできますが、動画プレイヤーの読み込みにはインターネット接続が必要です。</div>
 <nav class="tabs" aria-label="表示モード">
   <button class="tab active" type="button" data-tab="weekly">1ページ目: 週選択モード</button>
   <button class="tab" type="button" data-tab="direct">2ページ目: ref直接入力モード</button>
@@ -480,11 +499,15 @@ function persist() {
 }
 
 /* ---------- テーマ ---------- */
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
 function applyTheme() {
   const t = data.settings.theme;
   if (t === 'auto') document.documentElement.removeAttribute('data-theme');
   else document.documentElement.setAttribute('data-theme', t);
   E.themeToggle.textContent = { auto: 'テーマ: 自動', light: 'テーマ: ライト', dark: 'テーマ: ダーク' }[t];
+  const dark = t === 'dark' || (t === 'auto' && prefersDark.matches);
+  const meta = document.getElementById('metaThemeColor');
+  if (meta) meta.content = dark ? '#12309e' : '#1f4fd8';
 }
 function cycleTheme() {
   const order = ['auto', 'light', 'dark'];
@@ -899,9 +922,50 @@ function switchTab(tab) {
   syncHash();
 }
 
+/* ---------- PWA: インストール / オフライン / Service Worker ---------- */
+let deferredPrompt = null;
+function isStandalone() {
+  return window.matchMedia('(display-mode: standalone)').matches ||
+    window.matchMedia('(display-mode: minimal-ui)').matches ||
+    window.navigator.standalone === true;
+}
+function updateOnline() { E.offlineBanner.hidden = navigator.onLine; }
+function initPWA() {
+  updateOnline();
+  window.addEventListener('online', updateOnline);
+  window.addEventListener('offline', updateOnline);
+
+  if (!isStandalone()) E.installApp.hidden = false;
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (!isStandalone()) E.installApp.hidden = false;
+  });
+  E.installApp.addEventListener('click', async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      if (outcome === 'accepted') { E.installApp.hidden = true; msg(E.dataMsg, 'アプリをインストールしました。', 'ok'); }
+      return;
+    }
+    const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    msg(E.dataMsg, ios
+      ? '共有メニュー（□↑）から「ホーム画面に追加」を選ぶとアプリとして使えます。'
+      : 'ブラウザのメニューから「アプリをインストール」または「ホーム画面に追加」を選んでください。', 'ok');
+    E.dataMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+  window.addEventListener('appinstalled', () => { deferredPrompt = null; E.installApp.hidden = true; });
+
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(() => {}); });
+  }
+}
+
 /* ---------- イベント ---------- */
 function bind() {
   E.themeToggle.addEventListener('click', cycleTheme);
+  prefersDark.addEventListener('change', () => { if (data.settings.theme === 'auto') applyTheme(); });
   for (const b of tabs) b.addEventListener('click', () => switchTab(b.dataset.tab));
 
   // 週選択: 選択・移動
@@ -1067,6 +1131,7 @@ bind();
 updateWeeklyView();
 updateDirectView();
 switchTab(initial.tab);
+initPWA();
 })();
 </script>
 </body>
